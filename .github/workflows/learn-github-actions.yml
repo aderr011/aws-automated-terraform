@@ -22,7 +22,7 @@ jobs:
   #       id: validate
   #       run: terraform validate -no-color
   terraform-apply:
-    if: github.ref == "refs/heads/add-workflow"
+    if: ${{ github.ref }} == "refs/heads/add-workflow"
     runs-on: ubuntu-latest
     steps:
       - name: DUMP GITHUB
