@@ -23,3 +23,11 @@ module "tf-state" {
   bucket_name = "tf-state-file-backend"
 }
 
+module "vpc" {
+  source               = "./modules/vpc"
+  vpc_cidr             = local.availability_zones
+  availability_zones   = local.vpc_cidr
+  public_subnet_cidrs  = local.public_subnet_cidrs
+  private_subnet_cidrs = local.private_subnet_cidrs
+}
+
