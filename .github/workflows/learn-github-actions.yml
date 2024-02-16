@@ -1,32 +1,51 @@
 name: Terraform
-run-name: ${{ github.actor }} is learning GitHub Actions
-on: [push]
+on: 
+  pull_request: 
+  push:
+    branches:
+      - main
+env: 
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}}
 jobs:
-  # terraform-plan:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout 
-  #       uses: actions/checkout@v4
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v3
-  #     - name: Terraform fmt
-  #       id: fmt
-  #       run: terraform fmt -check
-  #     - name: Terraform Init
-  #       id: init
-  #       run: terraform init
-  #     - name: Terraform Validate
-  #       id: validate
-  #       run: terraform validate -no-color
-  #     - name: Terraform plan
-  #       id: validate
-  #       run: terraform validate -no-color
-  terraform-apply:
-    if: github.ref == 'refs/heads/add-workflow'
+  terraform-plan:
     runs-on: ubuntu-latest
     steps:
-      - name: DUMP GITHUB
-        env: 
-          GITHUB_CONTEXT: ${{toJson(github)}}
-        run: echo "$GITHUB_CONTEXT"
+      - name: Checkout 
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform plan
+        id: validate
+        run: terraform validate -no-color
+  terraform-apply:
+    needs: terraform-plan
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
     
