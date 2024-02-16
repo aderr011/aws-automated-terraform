@@ -23,8 +23,8 @@ jobs:
         id: validate
         run: terraform validate -no-color
       - name: Terraform plan
-        id: validate
-        run: terraform validate -no-color
+        id: plan
+        run: terraform plan
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main'
         id: apply
