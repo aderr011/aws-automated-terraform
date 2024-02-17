@@ -25,8 +25,8 @@ module "tf-state" {
 
 module "vpc" {
   source               = "./modules/vpc"
-  vpc_cidr             = local.availability_zones
-  availability_zones   = local.vpc_cidr
+  vpc_cidr             = local.vpc_cidr
+  availability_zones   = local.availability_zones
   public_subnet_cidrs  = local.public_subnet_cidrs
   private_subnet_cidrs = local.private_subnet_cidrs
 }
