@@ -1,4 +1,4 @@
-name: Terraform
+name: Deploy
 on: 
   pull_request: 
   push:
@@ -6,30 +6,63 @@ on:
       - main
   
 env: 
+  tf_version: v1.7.3
+  tg_version: 0.55.8
+  working_dir: .
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 jobs:
-  terraform-plan:
+  deploy-infra:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 
         uses: actions/checkout@v4
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-      - name: Terraform fmt
+      - name: Format
         id: fmt
         run: terraform fmt -check
-      - name: Terraform Init
-        id: init
-        run: terraform init
-      - name: Terraform Validate
-        id: validate
-        run: terraform validate -no-color
-      - name: Terraform plan
-        id: plan
-        run: terraform plan
-      - name: Terraform Apply
+      - name: Check terragrunt HCL
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'hclfmt --terragrunt-check --terragrunt-diff'
+      - name: Variable Validation
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all validate-inputs --terragrunt-log-level info --terragrunt-non-interactive'
+      - name: Initialize
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all init --terragrunt-log-level info --terragrunt-non-interactive'
+      - name: Validate
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all validate --terragrunt-log-level info --terragrunt-non-interactive'
+      - name: Plan
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all plan --terragrunt-log-level info --terragrunt-non-interactive'
+      - name: Apply
         if: github.ref == 'refs/heads/main'
-        id: apply
-        run: terraform apply -auto-approve
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all apply --terragrunt-log-level info --terragrunt-non-interactive'
  
