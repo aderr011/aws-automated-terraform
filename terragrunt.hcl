@@ -8,3 +8,12 @@ remote_state {
     region         = "us-west-2"
   }
 }
+
+terraform {
+  extra_arguments "common_vars" {
+    commands = ["plan", "apply"]
+    required_var_files = [
+      "${get_parent_terragrunt_dir()}/vars.tfvars.json"
+    ]
+  }
+}
