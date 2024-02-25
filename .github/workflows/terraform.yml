@@ -57,4 +57,12 @@ jobs:
           tg_version: ${{ env.tg_version }}
           tg_dir: ${{ env.working_dir }}
           tg_command: 'run-all plan --terragrunt-log-level info --terragrunt-non-interactive'
+      - name: Apply
+        if: github.ref == 'refs/heads/main'
+        uses: gruntwork-io/terragrunt-action@v2
+        with:
+          tf_version: ${{ env.tf_version }}
+          tg_version: ${{ env.tg_version }}
+          tg_dir: ${{ env.working_dir }}
+          tg_command: 'run-all apply --terragrunt-log-level info --terragrunt-non-interactive'
  
