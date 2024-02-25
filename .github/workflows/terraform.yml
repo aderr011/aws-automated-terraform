@@ -7,7 +7,7 @@ on:
   
 env: 
   tf_version: v1.7.3
-  tg_version: v0.55.8
+  tg_version: 0.55.8
   working_dir: .
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
