@@ -116,7 +116,6 @@
 #     Project = "AD starter TF"
 #   }
 # }
-
 # resource "aws_route_table_association" "ad_rt_association_1" {
 #   subnet_id      = aws_subnet.ad_subnet_1.id
 #   route_table_id = aws_route_table.ad_pub_rt.id
