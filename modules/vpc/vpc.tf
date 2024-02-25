@@ -47,7 +47,7 @@ resource "aws_eip" "ad_eip_2" {
 }
 resource "aws_nat_gateway" "ad_nat_gw_2" {
   allocation_id = aws_eip.ad_eip_2.id
-  subnet_id     = aws_subnet.ad_subnet_1.id
+  subnet_id     = aws_subnet.ad_subnet_2.id
   tags = {
     Name    = "ad_nat_gw_2"
     Project = "AD starter TF"
@@ -72,6 +72,7 @@ resource "aws_subnet" "ad_private_subnet_1" {
     Project = "AD starter TF"
   }
 }
+
 resource "aws_subnet" "ad_private_subnet_2" {
   vpc_id            = aws_vpc.ad_vpc.id
   cidr_block        = var.private_subnet_cidrs[1]
