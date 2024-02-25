@@ -1,30 +1,12 @@
+include {
+  path = find_in_parent_folders()
+}
+
 terraform {
-  backend "s3" {
-    bucket         = "tf-state-file-backend-bucket"
-    key            = "tf-infra/terraform.tfstate"
-    region         = "us-west-2"
-    dynamodb_table = "terraform-state-locking"
-    encrypt        = true
-  }
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
+  source = "modules/vpc"
 }
 
-provider "aws" {
-  region = "us-west-2"
-}
-
-module "tf-state" {
-  source      = "./modules/tf-state"
-  bucket_name = "tf-state-file-backend"
-}
-
-module "vpc" {
-  source               = "./modules/vpc"
+inputs = {
   vpc_cidr             = local.vpc_cidr
   availability_zones   = local.availability_zones
   public_subnet_cidrs  = local.public_subnet_cidrs
